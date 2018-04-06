@@ -2997,6 +2997,7 @@ class Api(object):
                           text,
                           user_id=None,
                           screen_name=None,
+                          quick_reply=None,
                           return_json=False):
         """Post a twitter direct message from the authenticated user.
 
@@ -3011,16 +3012,33 @@ class Api(object):
         Returns:
           A twitter.DirectMessage instance representing the message posted
         """
-        url = '%s/direct_messages/new.json' % self.base_url
+        url = '%s/direct_messages/events/new.json' % self.base_url
         data = {'text': text}
         if user_id:
-            data['user_id'] = user_id
+            user_id_str = str(user_id)
         elif screen_name:
-            data['screen_name'] = screen_name
+            user = self.GetUser(screen_name=screen_name, include_entities=False)
+            user_id_str = user.id_str
+            print("user_id_str: {}".format(user_id_str))
         else:
             raise TwitterError({'message': "Specify at least one of user_id or screen_name."})
 
-        resp = self._RequestUrl(url, 'POST', data=data)
+        json = {
+             "event": {
+               "type": "message_create",
+               "message_create": {
+                 "target": {
+                   "recipient_id": user_id_str
+                 },
+                 "message_data": {
+                   "text": text,
+                 }
+               }
+             }
+        }
+        if quick_reply:
+            json["event"]["message_create"]["message_data"]["quick_reply"]=quick_reply
+        resp = self._RequestUrl(url, 'POST', json=json)
         data = self._ParseAndCheckTwitter(resp.content.decode('utf-8'))
 
         if return_json:
