@@ -52,3 +52,6 @@ violations.flake8.txt
 
 # Built docs
 doc/_build/**
+
+# mytests
+send_dm.py

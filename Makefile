@@ -12,11 +12,11 @@ env:
 	pip install -Ur requirements.txt
 
 pyenv:
-	pyenv install -s 2.7.11
+	pyenv install -s 2.7.13
 	pyenv install -s 3.6.1
 	pyenv install -s pypy-5.3.1
 	# pyenv install -s pypy3-2.4.0
-	pyenv local 2.7.11 3.6.1 pypy-5.3.1 # pypy3-2.4.0
+	pyenv local 2.7.13 3.6.1 pypy-5.3.1 # pypy3-2.4.0
 
 dev: env pyenv
 	pip install -Ur requirements.testing.txt
@@ -59,9 +59,9 @@ build: clean
 	python setup.py bdist_wheel
 
 upload: clean
-	pyenv 2.7.11
+	pyenv 2.7.13
 	python setup.py sdist upload
 	python setup.py bdist_wheel upload
 	pyenv 3.6.1
 	python setup.py bdist_wheel upload
-	pyenv local 2.7.11 3.6.1 pypy-5.3.1
+	pyenv local 2.7.13 3.6.1 pypy-5.3.1
