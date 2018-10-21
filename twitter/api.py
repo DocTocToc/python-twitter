@@ -133,7 +133,6 @@ class Api(object):
         >>> api.GetFeatured()
         >>> api.GetDirectMessages()
         >>> api.GetSentDirectMessages()
-        >>> api.PostDirectMessage(user, text)
         >>> api.DestroyDirectMessage(message_id)
         >>> api.DestroyFriendship(user)
         >>> api.CreateFriendship(user)
@@ -2871,6 +2870,39 @@ class Api(object):
         else:
             return User.NewFromJsonDict(data)
 
+    def GetAllDirectMessages(self,
+                             count,
+                             cursor):
+        """Returns a list of direct messages sent to & received by the authenticating
+        user in the last 30 days. Sorted in reverse-chronological order.
+    
+        Args:
+          count:
+            Max number of events to be returned. 20 default. 49 max. The value 
+            of count is best thought of as a limit to the number of Tweets to
+            return because suspended or deleted content is removed after the
+            count has been applied. [Optional]
+
+        Returns:
+          A json object containing a list of direct messages objects as the value
+          of an "events" key. The list could be empty.
+        """
+        url = '%s/direct_messages/events/list.json' % self.base_url
+        parameters = {
+            'count': 49,
+        }
+        if cursor is not None:
+            if isinstance(cursor, str):
+                parameters['cursor'] = cursor
+        if count is not None:
+            parameters['count'] = enf_type('count', int, count)
+
+        resp = self._RequestUrl(url, 'GET', data=parameters)
+        data = self._ParseAndCheckTwitter(resp.content.decode('utf-8'))
+        
+        return data
+
+
     def GetDirectMessages(self,
                           since_id=None,
                           max_id=None,
@@ -2999,7 +3031,8 @@ class Api(object):
                           text,
                           user_id=None,
                           screen_name=None,
-                          return_json=False):
+                          return_json=False,
+                          quick_reply=None):
         """Post a twitter direct message from the authenticated user.
 
         Args:
@@ -3026,7 +3059,8 @@ class Api(object):
                         'recipient_id': user_id,
                     },
                     'message_data': {
-                        'text': text
+                        'text': text,
+                        'quick_reply': quick_reply,
                     }
                 }
             }
