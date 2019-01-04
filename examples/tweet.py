@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-
+"""
 '''Post a message to twitter'''
 
 __author__ = 'dewitt@google.com'
-
+"""
 from __future__ import print_function
 
 try:
