@@ -14,8 +14,8 @@ except ImportError:
     from urlparse import urlparse
 
 import requests
-from twitter import TwitterError
-import twitter
+from ..twitter import TwitterError
+from ..twitter import *
 
 if sys.version_info < (3,):
     range = xrange
