@@ -3032,7 +3032,8 @@ class Api(object):
                           user_id=None,
                           screen_name=None,
                           return_json=False,
-                          quick_reply=None):
+                          quick_reply=None,
+                          attachment=None):
         """Post a twitter direct message from the authenticated user.
 
         Args:
@@ -3061,6 +3062,7 @@ class Api(object):
                     'message_data': {
                         'text': text,
                         'quick_reply': quick_reply,
+                        'attachment': attachment
                     }
                 }
             }
